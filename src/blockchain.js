@@ -1,6 +1,31 @@
 const SHA256 = require('crypto-js/sha256');
 const Block = require('./block');
 
+
+
+// Lista blanca de direcciones IP autorizadas
+const ipWhitelist = ['192.168.56.8', '10.0.0.1', '123.456.789.0'];
+
+// Obtener la dirección IP de tu computadora
+const { networkInterfaces } = require('os');
+
+function getMyIP() {
+    const interfaces = networkInterfaces();
+    for (let interfaceName in interfaces) {
+        const addresses = interfaces[interfaceName];
+        for (let address of addresses) {
+            if (address.family === 'IPv4' && !address.internal) {
+                return address.address;
+            }
+        }
+    }
+    return null;
+}
+
+
+
+
+
 class Blockchain {
 
     constructor() {
@@ -10,6 +35,14 @@ class Blockchain {
     }
 
     async initializeChain() {
+
+        const myIP = getMyIP();
+
+        if (!ipWhitelist.includes(myIP)) {
+            console.error('Acceso denegado. Tu dirección IP no está autorizada:', myIP);
+            process.exit(1); // Salir del programa con código de error
+        }
+
         if (this.height == -1) {
             const block = new Block({ data: 'Genesis Block' });
             await this.addBlock(block)
@@ -17,7 +50,7 @@ class Blockchain {
     }
 
 
-
+    //AGREGAR NUEVOS BLOQUES
     addBlock(block) {
         let self = this;
         return new Promise(async (resolve, reject) => {
@@ -43,9 +76,6 @@ class Blockchain {
             resolve(block);
         });
     }
-
-
-
 
     validateChain() {
         let self = this;
