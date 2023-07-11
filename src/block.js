@@ -9,13 +9,14 @@ const hex2ascii = require('hex2ascii');
 class Block {
 
     constructor(data) {
-        this.hash = null;
-        this.height = 0;
-        //se transforma a hexadecimal mediante esto oString('hex')
-        this.body = Buffer.from(JSON.stringify(data).toString('hex'));
+        this.hash = null;     //  Hash perteneciente al bloque
 
-        this.time = 0;
-        this.previousBlockHash = '';
+        this.height = 0;  //  número de bloque
+        //se transforma a hexadecimal mediante esto oString('hex')
+        this.body = Buffer.from(JSON.stringify(data).toString('hex'));   //  Cuerpo o información hexadimal del bloque
+        this.time = 0;    //  Timestamp del bloque 
+        this.previousBlockHash = '';         //  hash anterio
+
     }
 
 
@@ -39,6 +40,7 @@ class Block {
             resolve(true);
         });
     }
+
     //Metodo de clase
     getBlockData() {
         //instalar dependencia npm i hex2ascii  importa al inicio
